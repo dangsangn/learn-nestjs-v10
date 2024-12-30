@@ -69,6 +69,14 @@ export class UsersService {
     return newUser;
   }
 
+  async findByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException(`User not found`);
+    }
+    return user;
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
