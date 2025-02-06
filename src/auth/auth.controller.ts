@@ -10,8 +10,9 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { UsersService } from '@/modules/users/users.service';
-import { Public } from '@/decorator/metadata';
+import { Public, ResponseMessage } from '@/decorator/metadata';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { USER_LOGIN } from '@/constants/response.message';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Public()
+  @ResponseMessage(USER_LOGIN)
   @Post('login')
   async login(@Request() req) {
     return this.authService.login(req.user);
