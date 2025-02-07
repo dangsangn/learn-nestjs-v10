@@ -11,3 +11,11 @@ export class CreateAuthDto {
   @IsEmpty()
   name: string;
 }
+
+export class VerifyCodeDto {
+  @IsNotEmpty()
+  _id: string;
+
+  @IsNotEmpty()
+  code: string;
+}

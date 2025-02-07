@@ -7,7 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
 import { hashPassword } from '@/helpers/hashPassword';
-import { CreateAuthDto } from '@/auth/dto/create-auth.dto';
+import { CreateAuthDto, VerifyCodeDto } from '@/auth/dto/create-auth.dto';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -73,6 +73,32 @@ export class UsersService {
     }
 
     return { _id: newUser._id };
+  }
+
+  async verifyCodeUser(verifyCode: VerifyCodeDto) {
+    const user = this.userModel.findOne({
+      _id: verifyCode._id,
+      codeId: verifyCode.code,
+    });
+    if (!user) {
+      throw new BadRequestException('User is not exist!');
+    }
+    // check expire
+    const isValidCode = dayjs().isBefore((await user).codeExpired);
+    if (isValidCode) {
+      // update active field
+      await this.userModel.updateOne(
+        { _id: verifyCode._id },
+        {
+          isActive: true,
+        },
+      );
+      return {
+        isActive: true,
+      };
+    } else {
+      throw new BadRequestException('Code is expire!');
+    }
   }
 
   async findAll(query: string, current: number) {

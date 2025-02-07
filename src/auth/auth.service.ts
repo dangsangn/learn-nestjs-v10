@@ -4,7 +4,7 @@ import { UsersService } from '@/modules/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, VerifyCodeDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +27,10 @@ export class AuthService {
 
   async register(data: CreateAuthDto) {
     return this.usersService.registerUser(data);
+  }
+
+  async verifyCode(data: VerifyCodeDto) {
+    return this.usersService.verifyCodeUser(data);
   }
 
   async validateUser(
